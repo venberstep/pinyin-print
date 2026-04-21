@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>在线中文拼音打印工具</title>
+    <link rel="stylesheet" href="./styles/base.css" />
+    <link rel="stylesheet" href="./styles/print.css" media="print" />
+    <style id="dynamic-print-style" media="print"></style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar no-print">
+        <header class="panel-block">
+          <h1>在线中文拼音打印工具</h1>
+          <p>输入中文内容，生成可直接打印或另存为 PDF 的 A4 拼音排版预览。</p>
+        </header>
+
+        <section class="panel-block">
+          <label class="field-label" for="source-text">文本内容</label>
+          <textarea
+            id="source-text"
+            class="text-input"
+            placeholder="请输入要标注拼音的中文内容。支持段落、空行、数字和英文混排。"
+          >重庆的天气很好，音乐课上大家都很快乐。
+银行门口的人行道上，有人在讨论重要行为。
+长大的孩子还好，正在认真学习拼音。</textarea>
+        </section>
+
+        <section class="panel-block controls">
+          <div class="control-row">
+            <label class="switch-label" for="show-pinyin">
+              <input id="show-pinyin" type="checkbox" checked />
+              <span>显示拼音</span>
+            </label>
+          </div>
+
+          <div class="control-row">
+            <label class="field-label" for="font-size">字号</label>
+            <select id="font-size">
+              <option value="16">16 px</option>
+              <option value="18" selected>18 px</option>
+              <option value="20">20 px</option>
+              <option value="22">22 px</option>
+              <option value="24">24 px</option>
+            </select>
+          </div>
+
+          <div class="control-row">
+            <label class="field-label" for="line-height">行高</label>
+            <select id="line-height">
+              <option value="1.8">1.8</option>
+              <option value="2" selected>2.0</option>
+              <option value="2.2">2.2</option>
+              <option value="2.4">2.4</option>
+              <option value="2.6">2.6</option>
+            </select>
+          </div>
+
+          <div class="control-row">
+            <label class="field-label" for="page-margin">页边距</label>
+            <select id="page-margin">
+              <option value="12">12 mm</option>
+              <option value="15" selected>15 mm</option>
+              <option value="18">18 mm</option>
+              <option value="20">20 mm</option>
+            </select>
+          </div>
+
+          <div class="action-row">
+            <button id="preview-button" type="button">生成预览</button>
+            <button id="print-button" type="button">打印 / 保存为 PDF</button>
+          </div>
+        </section>
+      </aside>
+
+      <main class="preview-stage">
+        <div class="preview-toolbar no-print">
+          <span>A4 预览</span>
+        </div>
+        <section class="page-stack">
+          <article id="print-page" class="print-page" aria-label="A4 打印预览页">
+            <div id="preview-content" class="preview-content"></div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="./vendor/pinyin-pro.js"></script>
+    <script src="./scripts/state.js"></script>
+    <script src="./scripts/pinyin-service.js"></script>
+    <script src="./scripts/render.js"></script>
+    <script src="./scripts/main.js"></script>
+  </body>
+</html>

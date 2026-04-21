@@ -1,0 +1,55 @@
+@page {
+  size: A4 portrait;
+  margin: 15mm;
+}
+
+html,
+body {
+  background: #fff;
+}
+
+@media print {
+  body {
+    margin: 0;
+  }
+
+  .no-print {
+    display: none \!important;
+  }
+
+  .app-shell,
+  .preview-stage,
+  .page-stack {
+    display: block;
+    padding: 0;
+    margin: 0;
+  }
+
+  .print-page {
+    width: auto;
+    min-height: auto;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    break-after: auto;
+  }
+
+  .preview-content {
+    font-size: var(--content-font-size, 18px);
+    line-height: var(--content-line-height, 2);
+  }
+
+  .preview-content p {
+    break-inside: avoid;
+    orphans: 2;
+    widows: 2;
+  }
+
+  .preview-content ruby {
+    break-inside: avoid;
+  }
+
+  .preview-content rt {
+    font-size: 0.5em;
+  }
+}
