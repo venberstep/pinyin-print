@@ -266,12 +266,12 @@ input[type="checkbox"] {
   font-size: calc(var(--tianzige-cell-size, 44px) * 0.6);
   line-height: 1;
   color: #111827;
-  transform: translateY(10%);
+  transform: translateY(3%);
 }
 
 .preview-content.is-no-pinyin .tianzige-cell.is-hanzi .tianzige-cell-content {
   font-size: calc(var(--tianzige-cell-size, 44px) * 0.72);
-  transform: translateY(4%);
+  transform: translateY(0);
 }
 
 .preview-content .tianzige-cell.is-plain .tianzige-cell-content {
