@@ -33,7 +33,9 @@
     elements.previewContent.style.setProperty('--content-font-size', state.fontSize + 'px');
     elements.previewContent.style.setProperty('--content-line-height', String(state.lineHeight));
     const cellsPerRow = Math.max(1, Math.floor(Math.max(210 - state.pageMargin * 2, 40) / (tianzigeCellSize * 25.4 / 96)));
+    const tianzigePinyinGap = state.showPinyin ? Math.max(state.fontSize * 0.9, 14) : 0;
     elements.previewContent.style.setProperty('--tianzige-cell-size', tianzigeCellSize + 'px');
+    elements.previewContent.style.setProperty('--tianzige-pinyin-gap', tianzigePinyinGap + 'px');
     elements.previewContent.style.setProperty('--tianzige-cells-per-row', String(cellsPerRow));
     elements.previewContent.classList.toggle('is-tianzige', state.tianzigeMode);
   }

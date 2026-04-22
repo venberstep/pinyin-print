@@ -189,7 +189,7 @@ input[type="checkbox"] {
 
 .preview-content .tianzige-grid {
   display: grid;
-  gap: 8px;
+  gap: calc(var(--tianzige-pinyin-gap, 0px) + 8px);
 }
 
 .preview-content .tianzige-row {
@@ -198,6 +198,16 @@ input[type="checkbox"] {
   gap: 0;
   width: fit-content;
   max-width: 100%;
+}
+
+.preview-content .tianzige-item {
+  position: relative;
+  width: var(--tianzige-cell-size, 44px);
+  padding-top: var(--tianzige-pinyin-gap, 0px);
+}
+
+.preview-content .tianzige-item.is-with-pinyin .tianzige-pinyin {
+  display: block;
 }
 
 .preview-content .tianzige-cell {
@@ -272,16 +282,18 @@ input[type="checkbox"] {
 
 .preview-content .tianzige-pinyin {
   position: absolute;
-  top: calc(var(--tianzige-cell-size, 44px) * 0.06);
   left: 50%;
+  bottom: calc(100% - var(--tianzige-pinyin-gap, 0px) + 2px);
   transform: translateX(-50%);
-  max-width: calc(100% - 6px);
+  width: max-content;
+  max-width: calc(var(--tianzige-cell-size, 44px) + 8px);
   font-size: calc(var(--tianzige-cell-size, 44px) * 0.16);
   line-height: 1;
   color: #4b5563;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: none;
 }
 
 .preview-content .tianzige-cell.is-space .tianzige-cell-content,

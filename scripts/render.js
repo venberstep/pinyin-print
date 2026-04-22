@@ -51,17 +51,22 @@
   }
 
   function createTianzigeCell(token, showPinyin) {
+    const item = document.createElement('span');
+    item.className = 'tianzige-item';
+
     const cell = document.createElement('span');
     cell.className = 'tianzige-cell';
 
     if (!token) {
       cell.classList.add('is-blank');
-      return cell;
+      item.append(cell);
+      return item;
     }
 
     if (token.type === 'space') {
       cell.classList.add('is-space');
-      return cell;
+      item.append(cell);
+      return item;
     }
 
     const content = document.createElement('span');
@@ -73,7 +78,8 @@
         const pinyin = document.createElement('span');
         pinyin.className = 'tianzige-pinyin';
         pinyin.textContent = token.pinyin[0] || '';
-        cell.append(pinyin);
+        item.classList.add('is-with-pinyin');
+        item.append(pinyin);
       }
     } else {
       cell.classList.add('is-plain');
@@ -81,7 +87,8 @@
 
     content.textContent = token.text;
     cell.append(content);
-    return cell;
+    item.append(cell);
+    return item;
   }
 
   function createTianzigeRow(tokens, cellsPerRow, showPinyin) {
