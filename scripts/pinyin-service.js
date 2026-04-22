@@ -10,11 +10,19 @@
     还好: ['hái', 'hǎo'],
   };
 
-  const hanziRegex = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/;
+  const hanziRegex = /[㐀-䶿一-鿿豈-﫿]/;
   const latinRegex = /[A-Za-z]/;
   const numberRegex = /[0-9]/;
   const punctRegex = /[，。！？；：、“”‘’（）《》〈〉【】—…,.!?;:()\[\]{}<>"'、·]/;
   const spaceRegex = /[ \t]/;
+  const neutralToneChars = new Set(['地', '得']);
+  const wordSegmenter = typeof Intl !== 'undefined' && typeof Intl.Segmenter === 'function'
+    ? new Intl.Segmenter('zh-CN', { granularity: 'word' })
+    : null;
+  const diModifierWords = new Set(['高兴', '开心', '认真', '慢慢', '轻轻', '飞快', '好好', '悄悄', '静静', '默默', '深深', '稳稳', '重重', '努力', '渐渐']);
+  const diLocationPrefixes = new Set(['遍', '满', '各', '原', '就', '本', '此', '那', '这', '外', '内', '异', '实', '当', '随']);
+  const diVerbStarters = new Set(['说', '走', '放', '笑', '跑', '看', '听', '写', '读', '唱', '跳', '哭', '拿', '吃', '喝', '想', '讲', '问', '学', '做', '敲', '站', '坐', '睡', '爬', '飞', '冲', '推', '拉', '搬', '抱', '望', '听']);
+  const deComplementStarters = new Set(['不', '太', '很', '真', '多', '少', '高', '低', '快', '慢', '好', '坏', '远', '近', '早', '晚', '轻', '重', '对', '错', '像', '有', '慌', '清', '开', '动', '住', '了', '过', '上', '下']);
 
   function normalizeText(text) {
     return String(text || '').replace(/\r\n?/g, '\n');
@@ -120,7 +128,24 @@
       return tokens;
     }
 
-    const pinyinList = library.pinyin(hanziText, {
+    const segments = typeof library.segment === 'function' ? library.segment(hanziText) : [];
+    const segmentedPinyin = [];
+
+    segments.forEach((segment) => {
+      const originChars = Array.from(segment.origin || '');
+      const resultChars = library.pinyin(segment.origin || '', {
+        type: 'array',
+        toneType: 'symbol',
+        nonZh: 'removed',
+        v: false,
+      });
+
+      originChars.forEach((_, index) => {
+        segmentedPinyin.push(resultChars[index] || '');
+      });
+    });
+
+    const fallbackPinyin = library.pinyin(hanziText, {
       type: 'array',
       toneType: 'symbol',
       nonZh: 'removed',
@@ -134,7 +159,7 @@
       }
 
       if (!token.pinyin.length) {
-        token.pinyin = [pinyinList[hanziIndex] || ''];
+        token.pinyin = [segmentedPinyin[hanziIndex] || fallbackPinyin[hanziIndex] || ''];
         token.source = 'library';
       }
 
@@ -144,10 +169,116 @@
     return tokens;
   }
 
+  function createWordRanges(tokens) {
+    const chars = tokens.map((token) => token.text).join('');
+    const library = window.pinyinPro;
+
+    if (library && typeof library.segment === 'function') {
+      const ranges = [];
+      let cursor = 0;
+
+      library.segment(chars).forEach((segment) => {
+        const text = segment.origin || '';
+        if (!text) {
+          return;
+        }
+
+        const length = Array.from(text).length;
+        ranges.push({
+          text,
+          start: cursor,
+          end: cursor + length - 1,
+        });
+        cursor += length;
+      });
+
+      return ranges;
+    }
+
+    if (!wordSegmenter) {
+      return [];
+    }
+
+    const ranges = [];
+
+    for (const segment of wordSegmenter.segment(chars)) {
+      if (!segment.segment) {
+        continue;
+      }
+
+      const end = segment.index + Array.from(segment.segment).length - 1;
+      ranges.push({
+        text: segment.segment,
+        start: segment.index,
+        end,
+      });
+    }
+
+    return ranges;
+  }
+
+  function findWordAtIndex(wordRanges, index) {
+    return wordRanges.find((range) => index >= range.start && index <= range.end) || null;
+  }
+
+  function shouldUseNeutralTone(tokens, wordRanges, index) {
+    const token = tokens[index];
+    if (!token || token.type !== 'hanzi' || !neutralToneChars.has(token.text)) {
+      return false;
+    }
+
+    const prev = tokens[index - 1];
+    const next = tokens[index + 1];
+    const word = findWordAtIndex(wordRanges, index);
+    const prevChar = prev ? prev.text : '';
+    const nextChar = next ? next.text : '';
+
+    if (token.text === '地') {
+      return Boolean(
+        prev
+          && next
+          && prev.type === 'hanzi'
+          && next.type === 'hanzi'
+          && word
+          && word.text === '地'
+          && (diModifierWords.has(prevChar + token.text) || diModifierWords.has(prevChar.repeat(2)) || diVerbStarters.has(nextChar))
+          && !diLocationPrefixes.has(prevChar)
+      );
+    }
+
+    if (token.text === '得') {
+      return Boolean(
+        prev
+          && next
+          && prev.type === 'hanzi'
+          && next.type === 'hanzi'
+          && word
+          && word.text === '得'
+          && deComplementStarters.has(nextChar)
+      );
+    }
+
+    return false;
+  }
+
+  function applyNeutralToneRules(tokens) {
+    const wordRanges = createWordRanges(tokens);
+
+    tokens.forEach((token, index) => {
+      if (shouldUseNeutralTone(tokens, wordRanges, index)) {
+        token.pinyin = ['de'];
+        token.source = 'rule';
+      }
+    });
+
+    return tokens;
+  }
+
   function annotateParagraph(paragraph) {
     const tokens = tokenizeParagraph(paragraph);
     applyOverrides(tokens);
     applyLibraryPinyin(tokens);
+    applyNeutralToneRules(tokens);
     return tokens;
   }
 
