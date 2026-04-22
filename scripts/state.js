@@ -2,6 +2,7 @@
   const defaultState = {
     rawText: '',
     showPinyin: true,
+    treatFirstLineAsTitle: false,
     fontSize: 18,
     lineHeight: 2,
     pageMargin: 15,

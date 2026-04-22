@@ -19,7 +19,7 @@
   const wordSegmenter = typeof Intl !== 'undefined' && typeof Intl.Segmenter === 'function'
     ? new Intl.Segmenter('zh-CN', { granularity: 'word' })
     : null;
-  const diModifierWords = new Set(['高兴', '开心', '认真', '慢慢', '轻轻', '飞快', '好好', '悄悄', '静静', '默默', '深深', '稳稳', '重重', '努力', '渐渐']);
+  const diModifierWords = new Set(['高兴', '开心', '认真', '慢慢', '轻轻', '飞快', '好好', '悄悄', '静静', '默默', '深深', '稳稳', '重重', '努力', '渐渐', '紧紧']);
   const diLocationPrefixes = new Set(['遍', '满', '各', '原', '就', '本', '此', '那', '这', '外', '内', '异', '实', '当', '随']);
   const diVerbStarters = new Set(['说', '走', '放', '笑', '跑', '看', '听', '写', '读', '唱', '跳', '哭', '拿', '吃', '喝', '想', '讲', '问', '学', '做', '敲', '站', '坐', '睡', '爬', '飞', '冲', '推', '拉', '搬', '抱', '望', '听']);
   const deComplementStarters = new Set(['不', '太', '很', '真', '多', '少', '高', '低', '快', '慢', '好', '坏', '远', '近', '早', '晚', '轻', '重', '对', '错', '像', '有', '慌', '清', '开', '动', '住', '了', '过', '上', '下']);
@@ -241,7 +241,7 @@
           && next.type === 'hanzi'
           && word
           && word.text === '地'
-          && (diModifierWords.has(prevChar + token.text) || diModifierWords.has(prevChar.repeat(2)) || diVerbStarters.has(nextChar))
+          && (diModifierWords.has(prevChar + token.text) || diModifierWords.has(prevChar + prevChar) || diVerbStarters.has(nextChar))
           && !diLocationPrefixes.has(prevChar)
       );
     }

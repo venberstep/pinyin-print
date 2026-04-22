@@ -30,8 +30,11 @@
     return document.createTextNode(token.text);
   }
 
-  function renderParagraph(tokens, showPinyin) {
+  function renderParagraph(tokens, showPinyin, className) {
     const paragraph = document.createElement('p');
+    if (className) {
+      paragraph.className = className;
+    }
 
     if (!tokens.length) {
       paragraph.innerHTML = '&nbsp;';
@@ -58,8 +61,9 @@
 
     container.classList.toggle('is-no-pinyin', !options.showPinyin);
 
-    paragraphTokens.forEach((tokens) => {
-      container.append(renderParagraph(tokens, options.showPinyin));
+    paragraphTokens.forEach((tokens, index) => {
+      const className = options.treatFirstLineAsTitle && index === 0 ? 'preview-title' : '';
+      container.append(renderParagraph(tokens, options.showPinyin, className));
     });
   }
 

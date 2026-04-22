@@ -2,6 +2,7 @@
   const elements = {
     textArea: document.getElementById('source-text'),
     showPinyin: document.getElementById('show-pinyin'),
+    treatFirstLineAsTitle: document.getElementById('treat-first-line-as-title'),
     fontSize: document.getElementById('font-size'),
     lineHeight: document.getElementById('line-height'),
     pageMargin: document.getElementById('page-margin'),
@@ -14,6 +15,7 @@
   function syncControls(state) {
     elements.textArea.value = state.rawText;
     elements.showPinyin.checked = state.showPinyin;
+    elements.treatFirstLineAsTitle.checked = state.treatFirstLineAsTitle;
     elements.fontSize.value = String(state.fontSize);
     elements.lineHeight.value = String(state.lineHeight);
     elements.pageMargin.value = String(state.pageMargin);
@@ -34,6 +36,7 @@
     applyPageStyles(state);
     window.previewRenderer.renderPreview(elements.previewContent, paragraphs, {
       showPinyin: state.showPinyin,
+      treatFirstLineAsTitle: state.treatFirstLineAsTitle,
     });
   }
 
@@ -41,6 +44,7 @@
     return {
       rawText: elements.textArea.value,
       showPinyin: elements.showPinyin.checked,
+      treatFirstLineAsTitle: elements.treatFirstLineAsTitle.checked,
       fontSize: Number(elements.fontSize.value),
       lineHeight: Number(elements.lineHeight.value),
       pageMargin: Number(elements.pageMargin.value),
@@ -58,7 +62,7 @@
       window.print();
     });
 
-    [elements.showPinyin, elements.fontSize, elements.lineHeight, elements.pageMargin].forEach((element) => {
+    [elements.showPinyin, elements.treatFirstLineAsTitle, elements.fontSize, elements.lineHeight, elements.pageMargin].forEach((element) => {
       element.addEventListener('change', updateStateAndRender);
     });
 
