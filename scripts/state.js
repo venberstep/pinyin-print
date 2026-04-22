@@ -3,6 +3,7 @@
     rawText: '',
     showPinyin: true,
     treatFirstLineAsTitle: false,
+    tianzigeMode: false,
     fontSize: 18,
     lineHeight: 2,
     pageMargin: 15,

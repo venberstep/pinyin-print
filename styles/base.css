@@ -183,6 +183,74 @@ input[type="checkbox"] {
   margin-bottom: 1.4em;
 }
 
+.preview-content.is-tianzige {
+  line-height: normal;
+}
+
+.preview-content .tianzige-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.preview-content .tianzige-row {
+  display: grid;
+  grid-template-columns: repeat(var(--tianzige-cells-per-row, 1), minmax(0, var(--tianzige-cell-size, 44px)));
+  gap: 0;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.preview-content .tianzige-cell {
+  position: relative;
+  width: var(--tianzige-cell-size, 44px);
+  height: var(--tianzige-cell-size, 44px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cbd5e1;
+  background:
+    linear-gradient(to right, transparent calc(50% - 0.5px), #d1d5db calc(50% - 0.5px), #d1d5db calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(50% - 0.5px), #d1d5db calc(50% - 0.5px), #d1d5db calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(45deg, transparent calc(50% - 0.5px), rgba(209, 213, 219, 0.9) calc(50% - 0.5px), rgba(209, 213, 219, 0.9) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(-45deg, transparent calc(50% - 0.5px), rgba(209, 213, 219, 0.9) calc(50% - 0.5px), rgba(209, 213, 219, 0.9) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  background-color: #fff;
+}
+
+.preview-content .tianzige-cell.is-plain,
+.preview-content .tianzige-cell.is-space,
+.preview-content .tianzige-cell.is-blank {
+  background:
+    linear-gradient(to right, transparent calc(50% - 0.5px), #e5e7eb calc(50% - 0.5px), #e5e7eb calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(50% - 0.5px), #e5e7eb calc(50% - 0.5px), #e5e7eb calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  background-color: #fff;
+}
+
+.preview-content .tianzige-cell-content {
+  position: relative;
+  z-index: 1;
+  font-size: 1em;
+  line-height: 1;
+}
+
+.preview-content .tianzige-pinyin {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 6px);
+  font-size: 0.3em;
+  line-height: 1;
+  color: #4b5563;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-content .tianzige-cell.is-space .tianzige-cell-content,
+.preview-content .tianzige-cell.is-blank .tianzige-cell-content {
+  display: none;
+}
+
 .preview-content p:last-child {
   margin-bottom: 0;
 }
