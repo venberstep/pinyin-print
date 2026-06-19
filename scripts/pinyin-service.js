@@ -171,28 +171,36 @@
 
   function createWordRanges(tokens) {
     const chars = tokens.map((token) => token.text).join('');
+    if (!chars || !chars.trim()) {
+      return [];
+    }
+
     const library = window.pinyinPro;
 
     if (library && typeof library.segment === 'function') {
-      const ranges = [];
-      let cursor = 0;
+      try {
+        const ranges = [];
+        let cursor = 0;
 
-      library.segment(chars).forEach((segment) => {
-        const text = segment.origin || '';
-        if (!text) {
-          return;
-        }
+        library.segment(chars).forEach((segment) => {
+          const text = segment.origin || '';
+          if (!text) {
+            return;
+          }
 
-        const length = Array.from(text).length;
-        ranges.push({
-          text,
-          start: cursor,
-          end: cursor + length - 1,
+          const length = Array.from(text).length;
+          ranges.push({
+            text,
+            start: cursor,
+            end: cursor + length - 1,
+          });
+          cursor += length;
         });
-        cursor += length;
-      });
 
-      return ranges;
+        return ranges;
+      } catch (error) {
+        console.warn('pinyinPro.segment 解析失败:', error);
+      }
     }
 
     if (!wordSegmenter) {
